@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginLogger;
 
-public class ProfFileStructure extends JavaPlugin {
+public class ChkFileStructure extends JavaPlugin {
 
 	public void check() {
 		
