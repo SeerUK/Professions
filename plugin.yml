@@ -1,3 +1,7 @@
 name: Professions
 main: net.unknown_degree.seer.Professions.Professions
 version: 0.1-prealpha
+commands:
+    prof:
+        description: Root command for Professions.
+        usage: Not a valid professions command. Type /prof help for more information.

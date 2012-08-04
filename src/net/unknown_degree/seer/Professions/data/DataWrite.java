@@ -8,16 +8,19 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class DataWrite extends JavaPlugin implements Listener {
-
+	
+	/*
+	 * onBlockBreak();
+	 * 
+	 * This function writes the player data on block break events.
+	 * TODO Write to player files...
+	 */
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent evt) {
-		
 		Player p = evt.getPlayer();
 		Block b = evt.getBlock();
-		
 		b.getType();
-		p.sendMessage(p.getName() + " you just broke: " + b.getTypeId() + ":" + b.getData());	
-		
+		p.sendMessage(p.getName() + " you just broke: " + b.getTypeId() + ":" + b.getData());
 	}
 	
 }
