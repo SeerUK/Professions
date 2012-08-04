@@ -2,10 +2,9 @@ package net.unknown_degree.seer.Professions;
 
 import net.unknown_degree.seer.Professions.data.DataSetup;
 import net.unknown_degree.seer.Professions.data.DataWrite;
+import net.unknown_degree.seer.Professions.commands.Commands;
 
 import org.bukkit.plugin.java.JavaPlugin;
-
-import commands.Commands;
 
 public class Professions extends JavaPlugin {
 	

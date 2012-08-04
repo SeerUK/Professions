@@ -1,4 +1,4 @@
-package commands;
+package net.unknown_degree.seer.Professions.commands;
 
 import net.unknown_degree.seer.Professions.Professions;
 
