@@ -1,6 +1,7 @@
 package net.unknown_degree.seer.Professions.data;
 
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,6 +9,10 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class DataWrite extends JavaPlugin implements Listener {
+	
+	public static void joinProf(CommandSender sender, String prof) {
+		sender.sendMessage(prof);
+	}
 	
 	/*
 	 * onBlockBreak();

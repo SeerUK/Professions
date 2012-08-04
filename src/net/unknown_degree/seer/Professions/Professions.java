@@ -8,7 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Professions extends JavaPlugin {
 	
-	private Commands CmdExecutor;
+	public final String version = "v0.1-prealpha";
 	
 	@Override
 	public void onEnable(){
@@ -22,8 +22,7 @@ public class Professions extends JavaPlugin {
 		/*
 		 * Setup Commands...
 		 */
-		CmdExecutor = new Commands(this);
-		getCommand("prof").setExecutor(CmdExecutor);
+		getCommand("prof").setExecutor(new Commands(this));
 		
 		/*
 		 * Check File Structure...
