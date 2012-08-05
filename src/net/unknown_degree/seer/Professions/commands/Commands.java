@@ -1,6 +1,12 @@
 package net.unknown_degree.seer.Professions.commands;
 
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import net.unknown_degree.seer.Professions.Professions;
+import net.unknown_degree.seer.Professions.data.DataSetup;
 import net.unknown_degree.seer.Professions.data.DataWrite;
 import net.unknown_degree.seer.Professions.data.DataRead;
 
@@ -20,7 +26,25 @@ public class Commands implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	    
 		if ( sender instanceof Player ) {
+		    
+		    /*
+		     * If for some reason the player data file is removed, attempt
+		     * to re-create it.
+		     */
+		    Player p = (Player) sender;
+		    try {
+                DataSetup.checkPlayerData(p.getPlayerListName());
+            } catch (IOException | ParserConfigurationException
+                    | TransformerException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+		    
+		    /*
+		     * Start commands:
+		     */
 			if ( args.length != 0 ) {
 				String sub = args[0].toLowerCase();
 				switch ( sub ) {
