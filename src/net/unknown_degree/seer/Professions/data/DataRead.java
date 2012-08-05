@@ -1,5 +1,8 @@
 package net.unknown_degree.seer.Professions.data;
 
+import net.unknown_degree.seer.Professions.Professions;
+import net.unknown_degree.seer.Professions.data.DataSetup;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -7,20 +10,23 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.w3c.dom.*;
 
 import java.io.*;
+import java.util.ArrayList;
 
 import javax.xml.parsers.*;
 
 
 public class DataRead extends JavaPlugin  {
-
+    
     /*
      * Prints an awesome looking info box to the player giving them information
      * about a specified job in relevance to them.
      */
-    public static void getInfo(CommandSender sender,String prof) throws Exception {
+    public static void getInfo(CommandSender sender,String prof,Professions plugin) throws Exception {
         
         prof = prof.toLowerCase();
-        Player p = (Player) sender;
+        Player p = (Player) sender;        
+        
+        DataSetup.checkPlayerData(p.getPlayerListName());
         
         /*
          * Parse player data:
@@ -33,34 +39,153 @@ public class DataRead extends JavaPlugin  {
         /*
          * Output sexy messages...
          */
-        sender.sendMessage(ChatColor.GREEN + "================= ..::" + ChatColor.WHITE + "Professions Info" + ChatColor.GREEN + "::.. =================");
+        if ( plugin.getConfig().getString("profs." + prof) != null ) {
         
-        for ( int i = 0; i < nodes.getLength(); ) {
-            Node n = nodes.item(i);
-            Element v = (Element) n;
-            String j = v.getAttribute("name").toLowerCase();
+            p.sendMessage(ChatColor.GREEN + "================= ..::" + ChatColor.WHITE + "Professions Info" + ChatColor.GREEN + "::.. =================");
             
-            // TODO If job exists in config :
-            if ( j.equals(prof) ) {
-                sender.sendMessage(ChatColor.DARK_AQUA + prof.toUpperCase() + "  ::  " + ChatColor.GREEN + "Employed");
-                sender.sendMessage(ChatColor.DARK_AQUA + "LEVEL: " + ChatColor.WHITE + v.getAttribute("level") + ChatColor.DARK_AQUA + "   ::  XP: " + ChatColor.WHITE + v.getAttribute("exp"));
-                // TODO Output experience bar...
-                sender.sendMessage("");
-                break;
+            if ( nodes.getLength() != 0 ) {
+                for ( int i = 0; i < nodes.getLength(); ) {
+                    Node n = nodes.item(i);
+                    Element v = (Element) n;
+                    String j = v.getAttribute("name").toLowerCase();
+                    
+                    if ( j.equals(prof) ) {
+                        p.sendMessage(ChatColor.DARK_AQUA + prof.toUpperCase() + "  ::  " + ChatColor.GREEN + "Employed" + ChatColor.DARK_AQUA + "  ::  BASE PAY: " + ChatColor.WHITE + plugin.getConfig().getString("profs." + prof + ".basepay"));
+                        p.sendMessage(ChatColor.DARK_AQUA + "LEVEL: " + ChatColor.WHITE + v.getAttribute("level") + ChatColor.DARK_AQUA + "   ::  XP: " + ChatColor.WHITE + v.getAttribute("exp"));
+                        // TODO Output experience bar...
+                        p.sendMessage("");
+                        prepareJobInfo(p, prof, plugin); // Output job details
+                        break;
+                    } 
+                }
             } else {
-                sender.sendMessage(ChatColor.DARK_AQUA + prof.toUpperCase() + "  ::  " + ChatColor.GREEN + "Unemployed");
-                sender.sendMessage("");
-                break;
+                p.sendMessage(ChatColor.DARK_AQUA + prof.toUpperCase() + "  ::  " + ChatColor.RED + "Unemployed" + ChatColor.DARK_AQUA + "  ::  BASE PAY: " + ChatColor.WHITE + plugin.getConfig().getString("profs." + prof + ".basepay"));
+                p.sendMessage(ChatColor.DARK_AQUA + "Type '/prof join " + prof + "' to join this job.");
+                p.sendMessage("");
+                prepareJobInfo(p, prof, plugin); // Output job details
+            }
+                
+            p.sendMessage(ChatColor.GREEN + "====================================================");
+          
+        } else {
+            p.sendMessage(ChatColor.RED + "Invalid job entered.");
+            p.sendMessage(ChatColor.RED + "Type '/prof list' for a list of available jobs.");
+        }
+                
+    }
+    
+    /*
+     *  Retrieve information from the config file:
+     */
+    public static ArrayList<ArrayList<ArrayList<String>>> getJobData(String prof, Professions plugin) {
+        
+        Boolean v = true;
+        Integer i = 0;
+        Integer c;
+        ArrayList<ArrayList<ArrayList<String>>> j = new ArrayList<ArrayList<ArrayList<String>>>();
+        
+        String action;
+        String delimiter;
+        String[] temp;
+        
+        while ( v == true ) {
+            
+            if ( plugin.getConfig().getString("profs." + prof + ".tier" + (i+1)) != null ) {
+                
+                j.add(i,new ArrayList<ArrayList<String>>());
+                
+                /*
+                 * Check current tier for onBlockBreak event triggers:
+                 */
+                if ( plugin.getConfig().getString("profs." + prof + ".tier" + (i+1) + ".onBreak") != null ) {
+                    
+                    j.get(i).add(0, new ArrayList<String>());
+                    
+                    action = plugin.getConfig().getString("profs." + prof + ".tier" + (i+1) + ".onBreak");
+                    delimiter = ",";
+                    
+                    temp = action.split(delimiter);
+
+                    for (c = 0; c < temp.length; c++) {
+                        (((ArrayList<ArrayList<String>>)j.get(i)).get(0)).add(c,temp[c]);
+                    }
+                    
+                } else {
+                    j.get(i).add(0, new ArrayList<String>());
+                    (((ArrayList<ArrayList<String>>)j.get(i)).get(0)).add(0,null);
+                }
+                
+                /*
+                 * Check current tier for onBlockPlace event triggers:
+                 */
+                if ( plugin.getConfig().getString("profs." + prof + ".tier" + (i+1) + ".onPlace") != null ) {
+                    
+                    j.get(i).add(1, new ArrayList<String>());
+                    
+                    action = plugin.getConfig().getString("profs." + prof + ".tier" + (i+1) + ".onPlace");
+                    delimiter = ",";
+                    
+                    temp = action.split(delimiter);
+
+                    for (c = 0; c < temp.length; c++) {
+                        (((ArrayList<ArrayList<String>>)j.get(i)).get(1)).add(c,temp[c]);
+                    }
+                    
+                } else {
+                    j.get(i).add(1, new ArrayList<String>());
+                    (((ArrayList<ArrayList<String>>)j.get(i)).get(1)).add(0,null);
+                }
+                
+                // TODO Add onAcquire section...
+
+                i = i + 1;
+                
+            } else {
+                // Exit loop when we've found all the tiers...
+                v = false;
             }
             
-            /*
-             * TODO Display earning information from config.
-             */
-            
-            //sender.sendMessage("Profession " + (i + 1) + ": " + v.getAttribute("name"));
         }
+
+        return j;
         
-        sender.sendMessage(ChatColor.GREEN + "====================================================");
+    }
+    
+    private static void prepareJobInfo(Player p, String prof, Professions plugin) {
+        
+        ArrayList<ArrayList<ArrayList<String>>> j = getJobData(prof, plugin);
+
+        Integer i1;
+        Integer i2;
+        //Integer i3;
+        String temp;
+        
+        for ( i1 = 0; i1 <j.size(); i1++ ) {
+            p.sendMessage(ChatColor.YELLOW + "TIER" + (i1 + 1) + ":");
+            
+            /*
+             * Send onBlockBreak rewards (if any):
+             */
+            temp = "";
+            if ( j.get(i1).get(0).get(0) != null ) {
+                for ( i2 = 0; i2 < j.get(i1).get(0).size(); i2++ ) {
+                    temp = temp + " " + j.get(i1).get(0).get(i2);
+                }
+                p.sendMessage(ChatColor.YELLOW + "BREAK: " + ChatColor.WHITE + temp);
+            }
+            
+            /* 
+             * Send onBlockPlace rewards (if any):
+             */
+            temp = "";
+            if ( j.get(i1).get(1).get(0) != null ) {
+                for ( i2 = 0; i2 < j.get(i1).get(1).size(); i2++ ) {
+                    temp = temp + " " + j.get(i1).get(1).get(i2);
+                }
+                p.sendMessage(ChatColor.YELLOW + "PLACE: " + ChatColor.WHITE + temp);
+            }
+            p.sendMessage("");
+        }
         
     }
     

@@ -39,7 +39,7 @@ public class Commands implements CommandExecutor {
 							return true;
 						} else {
 							sender.sendMessage(ChatColor.RED + "Invalid usage of this command...");
-							sender.sendMessage(ChatColor.RED + "Usage: /prof join [profession]");
+							sender.sendMessage(ChatColor.RED + "Usage: '/prof join [profession]'");
 							return true;
 						}
 					case "info":
@@ -51,12 +51,17 @@ public class Commands implements CommandExecutor {
 					    if ( args.length == 2 ) {
 					        sub = args[1].toLowerCase();
 					        try {
-                                DataRead.getInfo(sender, sub);
+					            //sender.sendMessage("test: " + plugin.getConfig().getString("test"));
+					            //sender.sendMessage("test");
+                                DataRead.getInfo(sender, sub, this.plugin);
                                 return true;
-                            } catch (Exception e) { return false; }
+                            } catch (Exception e) { 
+                                //sender.sendMessage("test: " + plugin.getConfig().getString("test"));
+                                return false;
+                            }
 					    } else {
 					        sender.sendMessage(ChatColor.RED + "Invalid usage of this command...");
-                            sender.sendMessage(ChatColor.RED + "Usage: /prof info [profession]");
+                            sender.sendMessage(ChatColor.RED + "Usage: '/prof info [profession]'");
                             return true;
 					    }
 					default:

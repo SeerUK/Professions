@@ -4,4 +4,4 @@ version: 0.1-prealpha
 commands:
     prof:
         description: Root command for Professions.
-        usage: Not a valid professions command. Type /prof help for more information.
+        usage: Not a valid professions command. Type '/prof help' for more information.

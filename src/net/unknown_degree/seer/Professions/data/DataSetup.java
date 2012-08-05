@@ -15,7 +15,7 @@ public class DataSetup extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent evt) throws IOException {
 		
-		this.checkPlayerData(evt.getPlayer().getPlayerListName());
+		checkPlayerData(evt.getPlayer().getPlayerListName());
 		
 	}
 	
@@ -26,7 +26,7 @@ public class DataSetup extends JavaPlugin implements Listener {
 	 * This function checks to see if the player has a data file set up.
 	 * If the player doesn't a file is set up for them.
 	 */
-	private boolean checkPlayerData(String name) throws IOException {
+	public static boolean checkPlayerData(String name) throws IOException {
 		
 		File f = new File("./plugins/professions/data/" + name + ".xml");
 		if ( !f.exists() ) {
