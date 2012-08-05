@@ -38,7 +38,7 @@ public class Commands implements CommandExecutor {
 							DataWrite.joinProf(sender, sub);
 							return true;
 						} else {
-							sender.sendMessage(ChatColor.RED + "Please enter a profession to join...");
+							sender.sendMessage(ChatColor.RED + "Invalid usage of this command...");
 							sender.sendMessage(ChatColor.RED + "Usage: /prof join [profession]");
 							return true;
 						}
@@ -55,8 +55,8 @@ public class Commands implements CommandExecutor {
                                 return true;
                             } catch (Exception e) { return false; }
 					    } else {
-					        sender.sendMessage(ChatColor.RED + "Please enter a profession to join...");
-                            sender.sendMessage(ChatColor.RED + "Usage: /prof join [profession]");
+					        sender.sendMessage(ChatColor.RED + "Invalid usage of this command...");
+                            sender.sendMessage(ChatColor.RED + "Usage: /prof info [profession]");
                             return true;
 					    }
 					default:
