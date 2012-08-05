@@ -15,8 +15,6 @@ public class DataWrite extends JavaPlugin implements Listener {
 	}
 	
 	/*
-	 * onBlockBreak();
-	 * 
 	 * This function writes the player data on block break events.
 	 * TODO Write to player files...
 	 */

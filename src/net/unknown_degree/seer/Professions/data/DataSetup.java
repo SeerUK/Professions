@@ -28,13 +28,16 @@ public class DataSetup extends JavaPlugin implements Listener {
 	 */
 	private boolean checkPlayerData(String name) throws IOException {
 		
-		File f = new File("./plugins/professions/data/" + name + ".dat");
+		File f = new File("./plugins/professions/data/" + name + ".xml");
 		if ( !f.exists() ) {
 			
 			try {
 				boolean fs = f.createNewFile();
 				if( fs ) {
 					PluginLogger.getLogger(JavaPlugin.class.getName()).log(Level.INFO, "[Professions] New player: " + name + "::Data file created successfully.");
+					/*
+					 * TODO Generate proper XML structure.
+					 */
 				} else {
 					PluginLogger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "[Professions] New player: " + name + "::Data file could not be created!");
 				}
