@@ -161,7 +161,7 @@ public class DataRead extends JavaPlugin  {
         String temp;
         
         for ( i1 = 0; i1 <j.size(); i1++ ) {
-            p.sendMessage(ChatColor.YELLOW + "TIER" + (i1 + 1) + ":");
+            p.sendMessage(ChatColor.RED + "-- TIER" + (i1 + 1) + " --");
             
             /*
              * Send onBlockBreak rewards (if any):
@@ -169,7 +169,7 @@ public class DataRead extends JavaPlugin  {
             temp = "";
             if ( j.get(i1).get(0).get(0) != null ) {
                 for ( i2 = 0; i2 < j.get(i1).get(0).size(); i2++ ) {
-                    temp = temp + " " + j.get(i1).get(0).get(i2);
+                    temp = j.get(i1).get(0).get(i2) + ", " + temp;
                 }
                 p.sendMessage(ChatColor.YELLOW + "BREAK: " + ChatColor.WHITE + temp);
             }
@@ -180,11 +180,10 @@ public class DataRead extends JavaPlugin  {
             temp = "";
             if ( j.get(i1).get(1).get(0) != null ) {
                 for ( i2 = 0; i2 < j.get(i1).get(1).size(); i2++ ) {
-                    temp = temp + " " + j.get(i1).get(1).get(i2);
+                    temp = j.get(i1).get(1).get(i2) + ", " + temp;
                 }
                 p.sendMessage(ChatColor.YELLOW + "PLACE: " + ChatColor.WHITE + temp);
             }
-            p.sendMessage("");
         }
         
     }
