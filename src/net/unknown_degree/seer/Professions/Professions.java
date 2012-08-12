@@ -18,7 +18,7 @@ public class Professions extends JavaPlugin {
 		 * Register Events...
 		 */
 		getServer().getPluginManager().registerEvents(new DataSetup(), this);
-		getServer().getPluginManager().registerEvents(new DataWrite(), this);
+		getServer().getPluginManager().registerEvents(new DataWrite(this), this);
 		 
 		/*
 		 * Setup Commands...
