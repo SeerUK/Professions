@@ -53,6 +53,33 @@ public class DataRead extends JavaPlugin  {
                         p.sendMessage(ChatColor.DARK_AQUA + prof.toUpperCase() + "  ::  " + ChatColor.GREEN + "Employed" + ChatColor.DARK_AQUA + "  ::  BASE PAY: " + ChatColor.WHITE + plugin.getConfig().getString("profs." + prof + ".basepay"));
                         p.sendMessage(ChatColor.DARK_AQUA + "LEVEL: " + ChatColor.WHITE + v.getAttribute("level") + ChatColor.DARK_AQUA + "   ::  XP: " + ChatColor.WHITE + v.getAttribute("exp"));
                         // TODO Output experience bar...
+                        
+                        // Experience calculations:
+                        int Level = Integer.parseInt( v.getAttribute("level") );
+                        int Exp = Integer.parseInt( v.getAttribute("exp") );
+                        int xpTop = (50 /3 * ( Level^3 - ( 6*Level^2 ) + 17*Level-12 ) + 8) / 11;
+
+                        double perTop = (float)100 / xpTop;
+                        double xpCur = (double) (perTop * Exp);
+                        
+                        Integer cBars = (int) Math.ceil( ((xpCur / 10) * 2) );
+                        String gdBars = "";
+                        
+                        for ( Integer x = 0; x < cBars; x = x + 1 ) {
+                            gdBars = gdBars + "=";
+                        }
+                        
+                        Integer oBars = 20 - cBars;
+                        String odBars = "";
+                        
+                        for ( Integer y = 0; y < oBars; y = y + 1 ) {
+                            odBars = odBars + "=";
+                        }
+                        
+                        String progress = ChatColor.YELLOW + "LVL PROGRESS: " + xpCur + "% " + ChatColor.YELLOW + "{" + ChatColor.RED + gdBars + ChatColor.WHITE + odBars + ChatColor.YELLOW + "}";
+                        
+                        p.sendMessage(progress);
+                        
                         p.sendMessage("");
                         prepareJobInfo(p, prof, plugin); // Output job details
                         break;
