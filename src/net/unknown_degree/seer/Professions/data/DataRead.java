@@ -1,13 +1,12 @@
 package net.unknown_degree.seer.Professions.data;
 
 import net.unknown_degree.seer.Professions.Professions;
-import net.unknown_degree.seer.Professions.data.DataSetup;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -21,25 +20,23 @@ public class DataRead extends JavaPlugin  {
      * Prints an awesome looking info box to the player giving them information
      * about a specified job in relevance to them.
      */
-    public static void getInfo(CommandSender sender,String prof,Professions plugin) throws Exception {
+    public static void getProfInfo(CommandSender sender,String prof,Professions plugin) throws Exception {
         
         prof = prof.toLowerCase();
         Player p = (Player) sender;        
-        
-        DataSetup.checkPlayerData(p.getPlayerListName());
-        
-        /*
-         * Parse player data:
-         */
-        File file = new File("./plugins/professions/data/" + p.getPlayerListName() + ".xml");
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document doc = builder.parse(file);
-        NodeList nodes = doc.getElementsByTagName("prof");
         
         /*
          * Output sexy messages...
          */
         if ( plugin.getConfig().getString("profs." + prof) != null ) {
+            
+            /*
+             * Parse player data:
+             */
+            File file = new File("./plugins/professions/data/" + p.getPlayerListName() + ".xml");
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = builder.parse(file);
+            NodeList nodes = doc.getElementsByTagName("prof");
         
             p.sendMessage(ChatColor.GREEN + "================= ..::" + ChatColor.WHITE + "Professions Info" + ChatColor.GREEN + "::.. =================");
             
@@ -52,36 +49,31 @@ public class DataRead extends JavaPlugin  {
                     if ( j.equals(prof) ) {
                         p.sendMessage(ChatColor.DARK_AQUA + prof.toUpperCase() + "  ::  " + ChatColor.GREEN + "Employed" + ChatColor.DARK_AQUA + "  ::  BASE PAY: " + ChatColor.WHITE + plugin.getConfig().getString("profs." + prof + ".basepay"));
                         p.sendMessage(ChatColor.DARK_AQUA + "LEVEL: " + ChatColor.WHITE + v.getAttribute("level") + ChatColor.DARK_AQUA + "   ::  XP: " + ChatColor.WHITE + v.getAttribute("exp"));
-                        // TODO Output experience bar...
                         
                         // Experience calculations:
                         int Level = Integer.parseInt( v.getAttribute("level") );
                         int Exp = Integer.parseInt( v.getAttribute("exp") );
                         int xpTop = (50 /3 * ( Level^3 - ( 6*Level^2 ) + 17*Level-12 ) + 8) / 11;
-
                         double perTop = (float)100 / xpTop;
                         double xpCur = (double) (perTop * Exp);
                         
                         Integer cBars = (int) Math.ceil( ((xpCur / 10) * 2) );
                         String gdBars = "";
-                        
                         for ( Integer x = 0; x < cBars; x = x + 1 ) {
                             gdBars = gdBars + "=";
                         }
                         
                         Integer oBars = 20 - cBars;
                         String odBars = "";
-                        
                         for ( Integer y = 0; y < oBars; y = y + 1 ) {
                             odBars = odBars + "=";
                         }
                         
                         String progress = ChatColor.YELLOW + "LVL PROGRESS: " + xpCur + "% " + ChatColor.YELLOW + "{" + ChatColor.RED + gdBars + ChatColor.WHITE + odBars + ChatColor.YELLOW + "}";
-                        
                         p.sendMessage(progress);
-                        
+                
                         p.sendMessage("");
-                        prepareJobInfo(p, prof, plugin); // Output job details
+                        prepareProfInfo(p, prof, plugin); // Output job details
                         break;
                     } 
                 }
@@ -89,7 +81,7 @@ public class DataRead extends JavaPlugin  {
                 p.sendMessage(ChatColor.DARK_AQUA + prof.toUpperCase() + "  ::  " + ChatColor.RED + "Unemployed" + ChatColor.DARK_AQUA + "  ::  BASE PAY: " + ChatColor.WHITE + plugin.getConfig().getString("profs." + prof + ".basepay"));
                 p.sendMessage(ChatColor.DARK_AQUA + "Type '/prof join " + prof + "' to join this job.");
                 p.sendMessage("");
-                prepareJobInfo(p, prof, plugin); // Output job details
+                prepareProfInfo(p, prof, plugin); // Output job details
             }
                 
             p.sendMessage(ChatColor.GREEN + "====================================================");
@@ -102,9 +94,10 @@ public class DataRead extends JavaPlugin  {
     }
     
     /*
-     *  Retrieve information from the config file:
+     *  Retrieves information from the config file in the forum of a
+     *  multidimensional array.
      */
-    public static ArrayList<ArrayList<ArrayList<String>>> getJobData(String prof, Professions plugin) {
+    public static ArrayList<ArrayList<ArrayList<String>>> getProfData(String prof, Professions plugin) {
         
         Boolean v = true;
         Integer i = 0;
@@ -178,9 +171,13 @@ public class DataRead extends JavaPlugin  {
         
     }
     
-    private static void prepareJobInfo(Player p, String prof, Professions plugin) {
+    /*
+     * Prepares the profession information so it's in a user-friendly format
+     * when it is output by the '/prof info' command.
+     */
+    private static void prepareProfInfo(Player p, String prof, Professions plugin) {
         
-        ArrayList<ArrayList<ArrayList<String>>> j = getJobData(prof, plugin);
+        ArrayList<ArrayList<ArrayList<String>>> j = getProfData(prof, plugin);
 
         Integer i1;
         Integer i2;
@@ -212,6 +209,45 @@ public class DataRead extends JavaPlugin  {
                 p.sendMessage(ChatColor.YELLOW + "PLACE: " + ChatColor.WHITE + temp);
             }
         }
+        
+    }
+
+    /*
+     * Checks to see if the player is employed in a specific job or not.
+     * Returns true if they ARE employed. 
+     */
+    public static boolean isInProf(Player p, String prof, Professions plugin) throws ParserConfigurationException, SAXException, IOException {
+        
+        if ( plugin.getConfig().getString("profs." + prof) != null ) {
+        
+            /*
+             * Parse player data:
+             */
+            File file = new File("./plugins/professions/data/" + p.getPlayerListName() + ".xml");
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = builder.parse(file);
+            NodeList nodes = doc.getElementsByTagName("prof");
+            
+            if ( nodes.getLength() != 0 ) {
+                for ( int i = 0; i < nodes.getLength(); ) {
+                    Node n = nodes.item(i);
+                    Element v = (Element) n;
+                    String j = v.getAttribute("name").toLowerCase();
+                    
+                    if ( j.equals(prof) ) {
+                        return true;
+                    } else { 
+                        return false;
+                    }
+                }
+            }
+            
+        } else {
+            p.sendMessage(ChatColor.RED + "Invalid job entered.");
+            p.sendMessage(ChatColor.RED + "Type '/prof list' for a list of available jobs.");
+            return false;
+        }
+        return false;
         
     }
     

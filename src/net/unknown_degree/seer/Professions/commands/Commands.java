@@ -26,14 +26,14 @@ public class Commands implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-	    
+        
 		if ( sender instanceof Player ) {
-		    
+  
 		    /*
 		     * If for some reason the player data file is removed, attempt
 		     * to re-create it.
 		     */
-		    Player p = (Player) sender;
+		    Player p = (Player) sender;            
 		    try {
                 DataSetup.checkPlayerData(p.getPlayerListName());
             } catch (IOException | ParserConfigurationException
@@ -77,7 +77,7 @@ public class Commands implements CommandExecutor {
 					        try {
 					            //sender.sendMessage("test: " + plugin.getConfig().getString("test"));
 					            //sender.sendMessage("test");
-                                DataRead.getInfo(sender, sub, this.plugin);
+                                DataRead.getProfInfo(sender, sub, this.plugin);
                                 return true;
                             } catch (Exception e) { 
                                 //sender.sendMessage("test: " + plugin.getConfig().getString("test"));
